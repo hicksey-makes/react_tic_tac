@@ -6,7 +6,6 @@ function Square(props) {
     return (
       <button
         className="square"
-        /* function definition so not called with every render() */
         onClick={props.onClick}>
         {props.value}
       </button>
@@ -53,30 +52,33 @@ class Game extends React.Component {
     this.state = {
       history: [{
           squares: Array(9).fill(null),
+          positions: [],
         }],
       stepNumber: 0,
       xIsNext: true,
       posIndex: [],
-      rowsCols: [],
     }
   }
 
   handleClick(i) {
-
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
+    const positions = current.positions.slice();
+
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
+    // positions[i] = i;
     squares[i] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
       history: history.concat([{
         squares: squares,
+        positions: positions.concat([i]),
       }]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
-      posIndex: this.state.posIndex.concat([i]),
+      // posIndex: this.state.posIndex.concat([i]),
     });
 
   }
@@ -85,7 +87,7 @@ class Game extends React.Component {
     this.setState({
       stepNumber: step,
       xIsNext: (step % 2) === 0,
-      posIndex: this.state.posIndex.slice(0, step),
+      // posIndex: this.state.posIndex.slice(0, step),
     });
   }
 
@@ -93,20 +95,17 @@ class Game extends React.Component {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
-    console.log(this.state.posIndex);
-    console.log(this.state.stepNumber);
-    // const rowsCols = [];
+    // console.log(this.state.posIndex);
+    // console.log(this.state.stepNumber);
 
-    // console.log(rowsCols);
     const moves = history.map((step, move) => {
       const desc = move ?
         'Go to move #' + move :
         'Go to game start';
-      // let pos = rowsCols.map((xy, index) => {
-      //  return `row: ${xy[0]} col: ${xy[1]}`;
-      // })
-      const rowsCols = this.state.posIndex.map((val, step) => {
-        console.log(val);
+
+      console.log(step.positions);
+
+      const rowsCols = step.positions.map((val, move) => {
         let row;
         let col;
         if (val === 0) {
@@ -139,13 +138,15 @@ class Game extends React.Component {
         }
         return [row, col];
       });
+      console.log(move);
+      console.log(rowsCols);
       return (
         <li key={move}>
 
           <button onClick={() => this.jumpTo(move)}>{desc}</button>
-          <p>
-            {rowsCols[move] && `row: ${rowsCols[move][0]} col: ${rowsCols[move][1]}`}
-          </p>
+          <span>
+          {rowsCols[move - 1] && `row: ${rowsCols[move - 1][0]} col: ${rowsCols[move - 1][1]}`}
+        </span>
         </li>
       );
     });
