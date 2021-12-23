@@ -23,6 +23,7 @@ class Board extends React.Component {
   }
 
   render() {
+    console.log(this.props);
     return (
       <div>
         <div className="status">{}</div>
@@ -56,7 +57,7 @@ class Game extends React.Component {
         }],
       stepNumber: 0,
       xIsNext: true,
-      posIndex: [],
+      currentMove: 0
     }
   }
 
@@ -84,10 +85,10 @@ class Game extends React.Component {
   }
 
   jumpTo(step) {
+    console.log(step);
     this.setState({
       stepNumber: step,
       xIsNext: (step % 2) === 0,
-      // posIndex: this.state.posIndex.slice(0, step),
     });
   }
 
@@ -96,14 +97,15 @@ class Game extends React.Component {
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
     // console.log(this.state.posIndex);
-    // console.log(this.state.stepNumber);
+    console.log(this.state.stepNumber);
 
     const moves = history.map((step, move) => {
       const desc = move ?
         'Go to move #' + move :
         'Go to game start';
-
-      console.log(step);
+      //
+      // console.log(step);
+      // console.log(move);
 
       const rowsCols = step.positions.map((val, move) => {
         let row;
@@ -138,11 +140,13 @@ class Game extends React.Component {
         }
         return [row, col];
       });
-      console.log(move);
-      console.log(rowsCols);
+      let classDark;
+      //
+      // console.log(step);
+      // console.log(rowsCols);
       return (
         <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <button className={this.state.stepNumber === move ? "active" : ""} onClick={() => this.jumpTo(move)}>{desc}</button>
           <span>
           {rowsCols[move - 1] && `row: ${rowsCols[move - 1][0]} col: ${rowsCols[move - 1][1]}`}
         </span>
@@ -162,6 +166,7 @@ class Game extends React.Component {
         <div className="game-board">
           <Board
             squares={current.squares}
+            positions={current.positions}
             onClick={(i) => this.handleClick(i)}
           />
         </div>
