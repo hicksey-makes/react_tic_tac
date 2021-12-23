@@ -103,7 +103,7 @@ class Game extends React.Component {
         'Go to move #' + move :
         'Go to game start';
 
-      console.log(step.positions);
+      console.log(step);
 
       const rowsCols = step.positions.map((val, move) => {
         let row;
@@ -142,7 +142,6 @@ class Game extends React.Component {
       console.log(rowsCols);
       return (
         <li key={move}>
-
           <button onClick={() => this.jumpTo(move)}>{desc}</button>
           <span>
           {rowsCols[move - 1] && `row: ${rowsCols[move - 1][0]} col: ${rowsCols[move - 1][1]}`}
